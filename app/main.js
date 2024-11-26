@@ -11,13 +11,14 @@ async function getData(query = "") {
 
     const url = `https://newsapi.org/v2/everything?q=${encodeURIComponent(
       query
-    )}&from=2024-10-25&sortBy=publishedAt&apiKey=${API_KEY}`;
+    )}&sortBy=publishedAt&apiKey=${API_KEY}`;
 
     const response = await fetch(url);
     if (response.status !== 200) {
       throw new Error("Failed to fetch data");
     } else {
       const data = await response.json();
+      console.log(data);
 
       if (data.articles.length === 0) {
         newsContainer.innerHTML =
@@ -27,8 +28,10 @@ async function getData(query = "") {
 
         data.articles.forEach((article) => {
           const articleHTML = `
-            <div class="bg-gray-200 p-4 m-2 rounded shadow-md">
-              <h2 class="text-xl font-semibold">${article.title}</h2>
+            <div class="bg-gray-200 p-4 m-2 rounded shadow-md hover:shadow-lg transition duration-300">
+              <h2 class="text-xl font-semibold text-gray-800 hover:text-blue-600">${
+                article.title
+              }</h2>
               <p class="text-sm text-gray-600">Published on: ${new Date(
                 article.publishedAt
               ).toLocaleDateString()}</p>
@@ -37,7 +40,7 @@ async function getData(query = "") {
               }</p>
               <a href="${
                 article.url
-              }" target="_blank" class="text-blue-500 mt-4 block">Read more</a>
+              }" target="_blank" class="text-blue-500 hover:text-blue-700 mt-4 block transition duration-300">Read more</a>
             </div>
           `;
           newsContainer.insertAdjacentHTML("beforeend", articleHTML);
@@ -52,12 +55,13 @@ async function getData(query = "") {
   }
 }
 
-window.onload = () => getData("tesla");
+window.onload = () => getData("technology");
 
 document.querySelector(".search-btn").addEventListener("click", () => {
   const query = document.querySelector(".search-input").value.trim();
   if (query) {
     getData(query);
+    document.querySelector(".search-input").value = "";
   } else {
     alert("Please enter a search term.");
   }
