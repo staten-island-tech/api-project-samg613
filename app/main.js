@@ -2,7 +2,7 @@ import "./style.css";
 
 const API_KEY = "5dca4716f00a4642833db8f51124df79";
 
-async function getData(query = "") {
+async function getData(query = "", language = "en") {
   const loadingSpinner = document.querySelector(".loading");
   const newsContainer = document.querySelector(".news-container");
 
@@ -11,14 +11,13 @@ async function getData(query = "") {
 
     const url = `https://newsapi.org/v2/everything?q=${encodeURIComponent(
       query
-    )}&sortBy=publishedAt&apiKey=${API_KEY}`;
+    )}&language=${language}&sortBy=publishedAt&apiKey=${API_KEY}`;
 
     const response = await fetch(url);
     if (response.status !== 200) {
       throw new Error("Failed to fetch data");
     } else {
       const data = await response.json();
-      console.log(data);
 
       if (data.articles.length === 0) {
         newsContainer.innerHTML =
@@ -55,14 +54,21 @@ async function getData(query = "") {
   }
 }
 
-window.onload = () => getData("technology");
+window.onload = () => getData("technology", "en");
 
 document.querySelector(".search-btn").addEventListener("click", () => {
   const query = document.querySelector(".search-input").value.trim();
+  const language = document.querySelector(".language-selector").value;
   if (query) {
-    getData(query);
+    getData(query, language);
     document.querySelector(".search-input").value = "";
   } else {
     alert("Please enter a search term.");
   }
+});
+
+document.querySelector(".language-selector").addEventListener("change", () => {
+  const query = document.querySelector(".search-input").value.trim();
+  const language = document.querySelector(".language-selector").value;
+  getData(query, language);
 });
