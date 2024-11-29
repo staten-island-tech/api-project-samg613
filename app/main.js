@@ -14,6 +14,7 @@ async function getData(query = "", language = "en") {
     )}&language=${language}&sortBy=publishedAt&apiKey=${API_KEY}`;
 
     const response = await fetch(url);
+
     if (response.status !== 200) {
       throw new Error("Failed to fetch data");
     } else {
@@ -25,7 +26,8 @@ async function getData(query = "", language = "en") {
       } else {
         newsContainer.innerHTML = "";
 
-        data.articles.forEach((article) => {
+        for (let i = 0; i < data.articles.length; i++) {
+          const article = data.articles[i];
           const articleHTML = `
             <div class="bg-gray-200 p-4 m-2 rounded shadow-md hover:shadow-lg transition duration-300">
               <h2 class="text-xl font-semibold text-gray-800 hover:text-blue-600">${
@@ -43,7 +45,7 @@ async function getData(query = "", language = "en") {
             </div>
           `;
           newsContainer.insertAdjacentHTML("beforeend", articleHTML);
-        });
+        }
       }
     }
   } catch (error) {
@@ -72,3 +74,4 @@ document.querySelector(".language-selector").addEventListener("change", () => {
   const language = document.querySelector(".language-selector").value;
   getData(query, language);
 });
+
